@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+</head>
+<body bgcolor="white">
+
+Xanboo Core SDK Package Tutorial
+
+<P><u><a NAME="Example-EjbProxy"</a>Example-EjbProxy: Using the EjbProxy class in the SDK utility package to get reference to SDK remote interfaces </u><br>
+import com.xanboo.core.util.EjbProxy;&nbsp;&nbsp;//utility class that will create the refrence <br>
+com.xanboo.core.sdk.account.AccountManager;&nbsp;//the SDK remote interface that we would like to refrence <br>
+
+//create a new instance of the EjbProxy class<br>
+EjbProxy proxy = new EjbProxy(); <br>
+//get a refrence to the remote interface<br>
+AccountManager accountMngr = proxy.getObj("xanboo/sdk/ejb/XanbooCoreAccountManager"); <br>
+....</P>
+
+
+<P><u><a NAME="Example-XanbooPrincipal"</a>Example-XanbooPrincipal: Authenticating a user using the XanbooPrincipal object in the SDK security package</u><br>
+import com.xanboo.core.security.XanbooPrincipal; <br>
+import com.xanboo.core.util.XanbooException; <br>
+
+//get a refrence to the account manager remote interface, as in <a href="#Example-EjbProxy">Example-EjbProxy</a><br>
+//assuming you have a login form with form fields for user name, password, and domain id <br>
+//get user information for authentication, from a login form <br>
+String domainId = ...get domain id from a field in a form... <br>
+String userName = ...get user name from a field in a form... <br>
+String password = ...get password from a field in a form... <br>
+//authenticate the user <br> 
+try { <br>
+   XanbooPrincipal xCaller = accountMngr.authenticateUser(domainId,userName,passwrod); <br>
+   //user was authenticated successfully, xCaller contains the user's account id and all other information in a XanbooPrincipal object <br>
+}catch(XanbooException xe) { <br>
+   //the provided combination of domain is, user name, and password were not found in the database, user authentication failed. <br>
+} <br>
+.... </P>
+
+
+<P><u><a NAME="Example-XanbooResultSet"</a>Example-XanbooResultSet: Using XanbooResultSet in the SDK utility package to get inbox items</u><br><br>
+import com.xanboo.core.util.EjbProxy; <br>
+import com.xanboo.core.sdk.inbox.InboxManager; <br>
+
+//assuming that we have a xCaller object of type XanbooPrincipal as in <a href="#Example-XanbooPrincipal">Example-XanbooPrincipal</a><br>
+<br>
+//get SDK inbox manager<br>
+EjbProxy proxy = new EjbProxy(); <br>
+InboxManager inboxMngr = proxy.getObj("xanboo/sdk/ejb/XanbooCoreInboxManager"); <br>
+<br>
+//get a list of inbox items <br>
+XanbooResultSet items = inboxMngr.getItemList(xCaller); <br>
+//get the XML representation of all the records in the XanbooResultSet, this will show the field names and their values <br>
+String xmlResults = items.toXML(); <br>
+<br>
+//get the first record in the list <br>
+HashMap item = (HashMap)items.get(0); <br>    
+//get the inbox item name, note that "NAME" is the name of the database field in the inbox items table <br>
+String itemName = item.get("NAME"); <br>
+.... </P>
+
+</body>
+</html>
